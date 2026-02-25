@@ -119,7 +119,7 @@ export default function FeaturedDestinationsSection() {
           모두 보기 <ArrowIcon />
         </button>
       </div>
-      <div className="mt-10 flex w-[1120px] gap-6 mx-auto">
+      <div className="mt-10 flex w-[1120px] gap-6 ">
         {loading
           ? Array.from({ length: 4 }).map((_, i) => (
               <div
@@ -129,13 +129,6 @@ export default function FeaturedDestinationsSection() {
             ))
           : items.slice(0, 4).map((item) => <DestinationCard key={item.id} item={item} />)}
       </div>
-
-      {/* fallback 표시 삭제해도 되는 부분 */}
-      {isFallback ? (
-        <p className="mt-3 w-[1120px] mx-auto text-[12px] text-[#94A3B8]">
-          (백엔드 미연결 상태라 더미 데이터로 표시 중)
-        </p>
-      ) : null}
     </section>
   );
 }
