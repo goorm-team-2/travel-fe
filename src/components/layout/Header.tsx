@@ -30,14 +30,14 @@ export default function Header() {
 
         <div className="flex items-center gap-3">
           <Link
-            to="/login"
+            to="/auth?tab=login"
             className="rounded-md bg-gray-100 px-4 py-2 text-sm font-medium text-[#0F172A] hover:bg-gray-200"
           >
             로그인
           </Link>
 
           <Link
-            to="/signup"
+            to="/auth?tab=signup"
             className="rounded-md bg-[#0066FF] px-4 py-2 text-sm font-medium text-white hover:opacity-90"
           >
             회원가입
