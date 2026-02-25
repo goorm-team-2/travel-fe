@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import Products from '../pages/Products';
 import MyPage from '../pages/MyPage';
 import InquiryComplete from '../pages/InquiryComplete';
+import AuthPage from '../pages/Auth';
 
 export const router = createBrowserRouter([
   {
@@ -13,6 +14,7 @@ export const router = createBrowserRouter([
       { path: '/products', element: <Products /> },
       { path: '/mypage', element: <MyPage /> },
       { path: '/inquiry/complete', element: <InquiryComplete /> },
+      { path: '/auth', element: <AuthPage /> },
     ],
   },
 ]);
