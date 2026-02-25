@@ -3,6 +3,7 @@ import MainLayout from '../components/layout/MainLayout';
 import Home from '../pages/Home';
 import Products from '../pages/Products';
 import MyPage from '../pages/MyPage';
+import InquiryComplete from '../pages/InquiryComplete';
 
 export const router = createBrowserRouter([
   {
@@ -11,6 +12,7 @@ export const router = createBrowserRouter([
       { path: '/', element: <Home /> },
       { path: '/products', element: <Products /> },
       { path: '/mypage', element: <MyPage /> },
+      { path: '/inquiry/complete', element: <InquiryComplete /> },
     ],
   },
 ]);
