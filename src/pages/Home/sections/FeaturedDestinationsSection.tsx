@@ -1,0 +1,141 @@
+import { useEffect, useState } from 'react';
+import DestinationCard from './DestinationCard';
+import { productApi } from '../../../api/productApi';
+import type { FeaturedProduct } from '../../../types/product';
+
+function ArrowIcon() {
+  return (
+    <svg
+      width="5.55"
+      height="9"
+      viewBox="0 0 6 9"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="translate-y-[1px]"
+    >
+      <path
+        d="M1 1L4.5 4.5L1 8"
+        stroke="#0166FF"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+// 백엔드 붙기 전 UI 확인용 더미 데이터
+const FALLBACK_FEATURED: FeaturedProduct[] = [
+  {
+    id: 1,
+    title: '도쿄, 일본',
+    priceText: '왕복 245,000원 ~',
+    imageUrl: '/images/featured/tokyo.png',
+  },
+  {
+    id: 2,
+    title: '제주도, 대한민국',
+    priceText: '편도 32,000원 ~',
+    imageUrl: '/images/featured/jeju.png',
+  },
+  {
+    id: 3,
+    title: '파리, 프랑스',
+    priceText: '왕복 1,120,000원 ~',
+    imageUrl: '/images/featured/paris.png',
+  },
+  {
+    id: 4,
+    title: '방콕, 태국',
+    priceText: '왕복 380,000원 ~',
+    imageUrl: '/images/featured/bangkok.png',
+  },
+];
+
+export default function FeaturedDestinationsSection() {
+  const [items, setItems] = useState<FeaturedProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isFallback, setIsFallback] = useState(false);
+
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        setLoading(true);
+        setIsFallback(false);
+
+        const res = await productApi.getFeaturedProducts();
+        const data = res?.data;
+
+        if (!alive) return;
+
+        setItems(Array.isArray(data) ? (data as FeaturedProduct[]) : []);
+      } catch (e) {
+        // 백엔드 가동 안되거나 에러면 더미로
+        console.error('[getFeaturedProducts] failed:', e);
+
+        if (!alive) return;
+        setIsFallback(true);
+        setItems(FALLBACK_FEATURED);
+      } finally {
+        if (!alive) return;
+        setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, []);
+
+  return (
+    <section className="w-full pt-[80px] pb-[120px]">
+      <div className="flex items-start justify-between">
+        <div>
+          <p
+            className="text-[14px] font-bold leading-[20px] tracking-[2.8px] text-[#0166FF]"
+            style={{ fontFamily: 'Pretendard' }}
+          >
+            RECOMMENDED
+          </p>
+
+          <h2
+            className="mt-2 text-[30px] font-bold leading-[36px] text-[#0F172A]"
+            style={{ fontFamily: 'Pretendard', letterSpacing: '-0.75px' }}
+          >
+            지금 가장 인기 있는 여행지
+          </h2>
+        </div>
+
+        <button
+          type="button"
+          className="flex items-center gap-2 text-[14px] font-bold leading-[20px] text-[#0166FF]"
+          style={{ fontFamily: 'Pretendard' }}
+          onClick={() => {
+            // TODO: /products 라우팅 연결 예정
+          }}
+        >
+          모두 보기 <ArrowIcon />
+        </button>
+      </div>
+      <div className="mt-10 flex w-[1120px] gap-6 mx-auto">
+        {loading
+          ? Array.from({ length: 4 }).map((_, i) => (
+              <div
+                key={i}
+                className="h-[349.33px] w-[262px] animate-pulse rounded-[8px] bg-slate-200"
+              />
+            ))
+          : items.slice(0, 4).map((item) => <DestinationCard key={item.id} item={item} />)}
+      </div>
+
+      {/* fallback 표시 삭제해도 되는 부분 */}
+      {isFallback ? (
+        <p className="mt-3 w-[1120px] mx-auto text-[12px] text-[#94A3B8]">
+          (백엔드 미연결 상태라 더미 데이터로 표시 중)
+        </p>
+      ) : null}
+    </section>
+  );
+}

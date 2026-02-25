@@ -8,15 +8,11 @@ export default function Footer() {
           <div className="min-w-0">
             <div className="flex items-center gap-2">
               <img src="/logo.svg" alt="TravelEase" className="h-8 w-8" />
-              <span className="text-xl font-bold text-[#94A3B8]">
-                TravelEase
-              </span>
+              <span className="text-xl font-bold text-[#94A3B8]">TravelEase</span>
             </div>
 
             <div className="mt-6 space-y-2 text-sm text-[#64748B]">
-              <p>
-                (주) 트래블 이즈 | 대표자: 홍길동 | 사업자등록번호: 123-45-67890
-              </p>
+              <p>(주) 트래블 이즈 | 대표자: 홍길동 | 사업자등록번호: 123-45-67890</p>
               <p>서울특별시 강남구 테헤란로 123 여행타워 15층</p>
               <p>이메일: support@travelservice.com | 전화: 1588-0000</p>
             </div>
@@ -27,10 +23,7 @@ export default function Footer() {
               <Link to="#" className="text-[#64748B] hover:text-[#0066FF]">
                 이용약관
               </Link>
-              <Link
-                to="#"
-                className="font-semibold text-[#0F172A] hover:text-[#0066FF]"
-              >
+              <Link to="#" className="font-semibold text-[#0F172A] hover:text-[#0066FF]">
                 개인정보처리방침
               </Link>
               <Link to="#" className="text-[#64748B] hover:text-[#0066FF]">
