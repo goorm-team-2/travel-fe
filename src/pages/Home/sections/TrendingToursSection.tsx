@@ -47,30 +47,33 @@ export default function TrendingToursSection() {
   } as const;
 
   return (
-    <section className="w-[1280px] mx-auto pt-[80px] pb-[80px]">
-      <div>
-        <p className="h-[20px] text-[14px] font-[700] leading-[20px] tracking-[2.8px] text-[#0166FF] uppercase">
-          Top Experiences
-        </p>
-        <h2 className="mt-[8px] h-[36px] text-[30px] font-[700] leading-[36px] tracking-[-0.75px] text-[#0F172A]">
-          놓치면 아쉬운 트렌딩 투어
-        </h2>
-      </div>
+    <section className="w-full pt-[80px] pb-[80px]">
+      <div className="mx-auto w-full max-w-[1280px] px-[32px]">
+        <div>
+          <p className="h-[20px] text-[14px] font-[700] leading-[20px] tracking-[2.8px] text-[#0166FF] uppercase">
+            Top Experiences
+          </p>
 
-      <div className="mt-[32px] w-[1120px] flex gap-[32px] h-[404.5px]">
-        {tours.map((tour) => (
-          <TourCard
-            key={tour.id}
-            data={{
-              ...tour,
-              onClickDetail: () => {
-                // 나중에 상세 페이지 라우팅으로 교체
-                console.log('detail:', tour.id);
-              },
-            }}
-            icons={icons}
-          />
-        ))}
+          <h2 className="mt-[8px] h-[36px] text-[30px] font-[700] leading-[36px] tracking-[-0.75px] text-[#0F172A]">
+            놓치면 아쉬운 트렌딩 투어
+          </h2>
+        </div>
+
+        <div className="mt-[32px] flex h-[404.5px] w-[1120px] gap-[32px]">
+          {tours.map((tour) => (
+            <TourCard
+              key={tour.id}
+              data={{
+                ...tour,
+                onClickDetail: () => {
+                  // 나중에 상세 페이지 라우팅으로 교체
+                  console.log('detail:', tour.id);
+                },
+              }}
+              icons={icons}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

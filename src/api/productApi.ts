@@ -1,7 +1,6 @@
 // api/productApi.js
 import axios from 'axios';
-
-const BASE_URL = 'http://localhost:8080/api';
+const BASE_URL = '/api';
 
 // 상품 관련 API
 export const productApi = {
@@ -16,7 +15,7 @@ export const productApi = {
   },
 
   // 상품 상세 조회
-  getProductDetail: (id) => {
+  getProductDetail: (id: number) => {
     return axios.get(`${BASE_URL}/products/${id}`);
-  }
+  },
 };
