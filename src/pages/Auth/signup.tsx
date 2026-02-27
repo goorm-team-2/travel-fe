@@ -21,12 +21,44 @@ export default function SignupForm() {
     );
   }, [name, email, password, passwordConfirm]);
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log('signup:', { name, email, password, passwordConfirm });
-    // TODO: api 연결(회원가입 정보 전송)
-  };
+const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
+  e.preventDefault();
 
+  // 프론트엔드 단에서 비밀번호 확인 검증 (서버로 요청 보내기 전)
+  if (password !== passwordConfirm) {
+    alert('비밀번호가 일치하지 않습니다.');
+    return; // 일치하지 않으면 통신을 시작하지 않고 함수 종료
+  }
+
+  try {
+    // 백엔드 회원가입 API 호출
+    const response = await fetch('http://localhost:8080/api/auth/signup', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      // SignupRequest DTO 구조에 맞춰 전송
+      body: JSON.stringify({ name, email, password }), 
+    });
+
+    if (!response.ok) {
+      throw new Error('회원가입 요청에 실패했습니다.');
+    }
+
+    // 백엔드 응답 처리
+    const message = await response.text(); 
+    console.log('서버 응답:', message);
+    
+    alert('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.');
+    
+    // 회원가입 성공 후 로그인 페이지로 이동
+    window.location.href = '/auth?tab=login'; 
+
+  } catch (error) {
+    console.error('회원가입 에러:', error);
+    alert('회원가입 처리 중 문제가 발생했습니다. 다시 시도해 주세요.');
+  }
+};
   return (
     <form className="w-full flex flex-col gap-[20px]" onSubmit={handleSubmit}>
       <label className="text-textPrimary font-bold text-[14px]">

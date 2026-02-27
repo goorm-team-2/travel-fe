@@ -1,18 +1,49 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useContext } from 'react'; 
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './AuthContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
+  const navigate = useNavigate();
+  
+  const authContext = useContext(AuthContext);
 
   const isDisabled = useMemo(() => {
     return !email.trim() || !password.trim();
   }, [email, password]);
 
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log('login:', { email, password });
-    // TODO: api 연결(로그인 정보 전송)
+    
+    try {
+      const response = await fetch('http://localhost:8080/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('로그인 요청에 실패했습니다.');
+      }
+
+      const data = await response.json();
+      
+      if (authContext) {
+        authContext.login(data.token);
+      } else {
+        localStorage.setItem('accessToken', data.token);
+      }
+      
+      navigate('/');
+
+    } catch (error) {
+      console.error('로그인 에러:', error);
+      alert('이메일 또는 비밀번호를 다시 확인해 주세요.');
+    }
   };
 
   return (
