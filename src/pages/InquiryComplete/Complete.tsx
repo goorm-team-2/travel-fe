@@ -1,6 +1,24 @@
 import { useNavigate } from 'react-router-dom';
 
-export default function Complete() {
+type Props = {
+  inquiryId: string;
+  inquiryDate: string; // "2026-01-27 14:30" 같은 문자열
+};
+
+function formatInquiryDate(dateString: string) {
+  const date = new Date(dateString);
+
+  return date.toLocaleString('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  });
+}
+
+export default function Complete({ inquiryId, inquiryDate }: Props) {
   const navigate = useNavigate();
 
   return (
@@ -21,11 +39,11 @@ export default function Complete() {
         </h3>
         <div className="flex pt-1 pb-3 border-b border-[#E2E8F0]/50">
           <p className="text-[#64748B] font-medium text-[14px] flex-1">접수 번호</p>
-          <p className="text-textPrimary font-bold text-[14px]">TRV-20260132</p>
+          <p className="text-textPrimary font-bold text-[14px]">{inquiryId}</p>
         </div>
         <div className="flex pt-1 pb-3 border-b border-[#E2E8F0]/50">
           <p className="text-[#64748B] font-medium text-[14px] flex-1">문의 일시</p>
-          <p className="text-textPrimary font-bold text-[14px]">2026년 1월 27일 14:30</p>
+          <p className="text-textPrimary font-bold text-[14px]">{formatInquiryDate(inquiryDate)}</p>
         </div>
       </div>
       <div className="w-full flex gap-4 font-bold text-[16px]">

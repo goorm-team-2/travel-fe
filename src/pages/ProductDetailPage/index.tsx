@@ -63,7 +63,10 @@ export default function ProductDetailPage() {
           <IncludesExcludes includes={product.includes} excludes={product.excludes} />
         </div>
         <button
-          onClick={() => navigate(`/inquiry/${product.id}`)}
+          onClick={() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+            navigate(`/inquiry/${product.id}`);
+          }}
           className="sticky top-20 bg-primary w-full h-20 text-white font-medium text-[16px] rounded-[12px]"
         >
           문의 및 예약하기
