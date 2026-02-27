@@ -1,6 +1,5 @@
 // api/productApi.js
 import axios from 'axios';
-
 const BASE_URL = '/api';
 
 // 상품 관련 API
