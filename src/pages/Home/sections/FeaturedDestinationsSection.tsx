@@ -55,7 +55,6 @@ const FALLBACK_FEATURED: FeaturedProduct[] = [
 export default function FeaturedDestinationsSection() {
   const [items, setItems] = useState<FeaturedProduct[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isFallback, setIsFallback] = useState(false);
 
   useEffect(() => {
     let alive = true;
@@ -63,7 +62,6 @@ export default function FeaturedDestinationsSection() {
     (async () => {
       try {
         setLoading(true);
-        setIsFallback(false);
 
         const res = await productApi.getFeaturedProducts();
         const data = res?.data;
@@ -72,11 +70,9 @@ export default function FeaturedDestinationsSection() {
 
         setItems(Array.isArray(data) ? (data as FeaturedProduct[]) : []);
       } catch (e) {
-        // 백엔드 가동 안되거나 에러면 더미로
         console.error('[getFeaturedProducts] failed:', e);
 
         if (!alive) return;
-        setIsFallback(true);
         setItems(FALLBACK_FEATURED);
       } finally {
         if (!alive) return;
@@ -91,43 +87,43 @@ export default function FeaturedDestinationsSection() {
 
   return (
     <section className="w-full pt-[80px] pb-[120px]">
-      <div className="flex items-start justify-between">
-        <div>
-          <p
-            className="text-[14px] font-bold leading-[20px] tracking-[2.8px] text-[#0166FF]"
+      <div className="mx-auto w-full max-w-[1280px] px-[32px]">
+        <div className="flex items-start justify-between">
+          <div>
+            <p
+              className="text-[14px] font-bold leading-[20px] tracking-[2.8px] text-[#0166FF]"
+              style={{ fontFamily: 'Pretendard' }}
+            >
+              RECOMMENDED
+            </p>
+
+            <h2
+              className="mt-2 text-[30px] font-bold leading-[36px] text-[#0F172A]"
+              style={{ fontFamily: 'Pretendard', letterSpacing: '-0.75px' }}
+            >
+              지금 가장 인기 있는 여행지
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            className="flex items-center gap-2 text-[14px] font-bold leading-[20px] text-[#0166FF]"
             style={{ fontFamily: 'Pretendard' }}
           >
-            RECOMMENDED
-          </p>
-
-          <h2
-            className="mt-2 text-[30px] font-bold leading-[36px] text-[#0F172A]"
-            style={{ fontFamily: 'Pretendard', letterSpacing: '-0.75px' }}
-          >
-            지금 가장 인기 있는 여행지
-          </h2>
+            모두 보기 <ArrowIcon />
+          </button>
         </div>
 
-        <button
-          type="button"
-          className="flex items-center gap-2 text-[14px] font-bold leading-[20px] text-[#0166FF]"
-          style={{ fontFamily: 'Pretendard' }}
-          onClick={() => {
-            // TODO: /products 라우팅 연결 예정
-          }}
-        >
-          모두 보기 <ArrowIcon />
-        </button>
-      </div>
-      <div className="mt-10 flex w-[1120px] gap-6 ">
-        {loading
-          ? Array.from({ length: 4 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-[349.33px] w-[262px] animate-pulse rounded-[8px] bg-slate-200"
-              />
-            ))
-          : items.slice(0, 4).map((item) => <DestinationCard key={item.id} item={item} />)}
+        <div className="mt-10 flex w-full gap-6">
+          {loading
+            ? Array.from({ length: 4 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[349.33px] w-[262px] animate-pulse rounded-[8px] bg-slate-200"
+                />
+              ))
+            : items.slice(0, 4).map((item) => <DestinationCard key={item.id} item={item} />)}
+        </div>
       </div>
     </section>
   );
