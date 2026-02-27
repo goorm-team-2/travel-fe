@@ -1,6 +1,6 @@
 import { useMemo, useState, useContext } from 'react'; 
 import { useNavigate } from 'react-router-dom';
-import { AuthContext } from './AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function LoginForm() {
   const [email, setEmail] = useState('');
