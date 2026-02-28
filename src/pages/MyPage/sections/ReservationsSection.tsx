@@ -193,8 +193,6 @@ export default function ReservationsSection() {
     <>
       <div className="flex items-center justify-between">
         <h3 className="text-[24px] font-semibold text-[#0F172A]">나의 예약 및 문의 내역</h3>
-
-        {/* 필터: 전체 pill, 나머지 텍스트 */}
         <div className="flex items-center gap-[28px]">
           {filterButtons.map((b) => {
             const active = activeFilter === b.key;
