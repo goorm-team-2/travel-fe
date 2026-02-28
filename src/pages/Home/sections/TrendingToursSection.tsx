@@ -1,42 +1,31 @@
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import TourCard, { type TourCardData } from '../../../components/TourCard';
+import { productApi } from '../../../api/productApi';
+
+type RawProduct = {
+  id: number;
+  thumbnailUrl: string;
+  name: string;
+  duration: string;
+  rating: number;
+  reviewCount: number;
+  price: number;
+};
+
+function formatPriceKRW(price: number) {
+  return `₩ ${price.toLocaleString('ko-KR')}`;
+}
+
+function fixImageUrl(url: string) {
+  if (url.startsWith('http')) return url;
+  return `http://localhost:8081${url}`;
+}
 
 export default function TrendingToursSection() {
-  // 나중에 API로 교체할 부분 (지금은 더미 데이터)
-  const tours: TourCardData[] = [
-    {
-      id: 1,
-      imageSrc: '/images/trending/trending1.png',
-      badgeText: '인기 급상승',
-      rating: '4.9',
-      reviewCountText: '(1,240)',
-      title: '런던 템즈강 야경 크루즈 & 디너 투어',
-      durationText: '3시간',
-      guideText: '한국어 가이드',
-      priceText: '₩ 89,000',
-    },
-    {
-      id: 2,
-      imageSrc: '/images/trending/trending2.png',
-      badgeText: '인기 급상승',
-      rating: '4.8',
-      reviewCountText: '(856)',
-      title: '인도 아그라 타지마할 프라이빗 일출 투어',
-      durationText: '8시간',
-      guideText: '영어 가이드',
-      priceText: '₩ 145,000',
-    },
-    {
-      id: 3,
-      imageSrc: '/images/trending/trending3.png',
-      badgeText: '매진 임박',
-      rating: '5.0',
-      reviewCountText: '(2,410)',
-      title: '교토 기온거리 전통 기모노 체험 & 스냅 촬영',
-      durationText: '2시간',
-      guideText: '한국어 지원',
-      priceText: '₩ 62,000',
-    },
-  ];
+  const navigate = useNavigate();
+  const [tours, setTours] = useState<TourCardData[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const icons = {
     star: '/star.svg',
@@ -45,6 +34,55 @@ export default function TrendingToursSection() {
     clock: '/clock.svg',
     lang: '/lang.svg',
   } as const;
+
+  useEffect(() => {
+    let alive = true;
+
+    (async () => {
+      try {
+        setLoading(true);
+
+        const res = await productApi.getProducts(); // GET /api/products
+        const data = res?.data as RawProduct[];
+
+        if (!alive) return;
+
+        const pick = Array.isArray(data) ? data.slice(0, 3) : [];
+
+        const badgeByIndex = ['인기 급상승', '인기 급상승', '매진 임박'];
+
+        const mapped: TourCardData[] = pick.map((p, idx) => ({
+          id: p.id,
+          imageSrc: fixImageUrl(p.thumbnailUrl),
+          badgeText: badgeByIndex[idx] ?? '추천',
+          rating: String((p.rating ?? 0).toFixed(1)),
+          reviewCountText: `(${(p.reviewCount ?? 0).toLocaleString('ko-KR')})`,
+          title: p.name,
+          durationText: p.duration,
+          guideText: idx === 1 ? '영어 가이드' : '한국어 가이드',
+          priceText: formatPriceKRW(p.price ?? 0),
+        }));
+
+        setTours(
+          mapped.map((t) => ({
+            ...t,
+            onClickDetail: () => navigate(`/products/${t.id}`),
+          })),
+        );
+      } catch (e) {
+        console.error('[TrendingToursSection] getProducts failed:', e);
+
+        setTours([]);
+      } finally {
+        if (!alive) return;
+        setLoading(false);
+      }
+    })();
+
+    return () => {
+      alive = false;
+    };
+  }, [navigate]);
 
   return (
     <section className="w-full pt-[80px] pb-[80px]">
@@ -60,19 +98,14 @@ export default function TrendingToursSection() {
         </div>
 
         <div className="mt-[32px] flex h-[404.5px] w-[1120px] gap-[32px]">
-          {tours.map((tour) => (
-            <TourCard
-              key={tour.id}
-              data={{
-                ...tour,
-                onClickDetail: () => {
-                  // 나중에 상세 페이지 라우팅으로 교체
-                  console.log('detail:', tour.id);
-                },
-              }}
-              icons={icons}
-            />
-          ))}
+          {loading
+            ? Array.from({ length: 3 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="h-[404.5px] w-[352px] animate-pulse rounded-[12px] border border-[#E2E8F0] bg-slate-200"
+                />
+              ))
+            : tours.map((tour) => <TourCard key={tour.id} data={tour} icons={icons} />)}
         </div>
       </div>
     </section>

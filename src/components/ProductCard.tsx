@@ -1,15 +1,32 @@
 import type { Product } from '../types/product';
 
-export default function ProductCard({ item }: { item: Product }) {
+export default function ProductCard({
+  item,
+  onClick,
+}: {
+  item: Product;
+  onClick?: (id: Product['id']) => void;
+}) {
   const showBadges = Boolean(item.badgeLeft || item.badgeRight);
 
   return (
-    <article className="w-full overflow-hidden rounded-[12px] border border-[#E2E8F0] bg-white">
+    <article
+      className="w-full overflow-hidden rounded-[12px] border border-[#E2E8F0] bg-white cursor-pointer"
+      onClick={() => onClick?.(item.id)}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') onClick?.(item.id);
+      }}
+    >
       <div className="relative h-[218.48px] w-full">
         <img src={item.imageUrl} alt={item.title} className="h-full w-full object-cover" />
 
         <button
           type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
           className="absolute right-[12px] top-[12px] inline-flex h-[32px] w-[32px] items-center justify-center rounded-[9999px] bg-[rgba(255,255,255,0.20)] p-[8px] backdrop-blur-[12px]"
           aria-label="like"
         >
@@ -102,6 +119,10 @@ export default function ProductCard({ item }: { item: Product }) {
 
           <button
             type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick?.(item.id);
+            }}
             className="inline-flex h-[32px] w-[32px] items-center justify-center rounded-[8px] bg-[rgba(0,102,255,0.10)] p-[8px]"
             aria-label="go"
           >

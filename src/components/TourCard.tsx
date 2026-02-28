@@ -30,8 +30,25 @@ export default function TourCard({ data, icons }: { data: TourCardData; icons: I
 
   const badgeBgColor = data.badgeText === '매진 임박' ? 'bg-[#F59E0B]' : 'bg-[#0166FF]';
 
+  const handleCardClick = () => {
+    data.onClickDetail?.();
+  };
+
+  const handleKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      data.onClickDetail?.();
+    }
+  };
+
   return (
-    <div className="w-[352px] h-[404.5px] rounded-[8px] border border-[#F1F5F9] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden">
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={handleKeyDown}
+      className="w-[352px] h-[404.5px] rounded-[8px] border border-[#F1F5F9] bg-white shadow-[0_1px_2px_rgba(0,0,0,0.05)] overflow-hidden cursor-pointer"
+    >
       <div className="relative w-[350px] h-[224px] mx-auto mt-[1px]">
         <img src={data.imageSrc} alt="" className="h-full w-full object-cover" draggable={false} />
 
@@ -48,7 +65,10 @@ export default function TourCard({ data, icons }: { data: TourCardData; icons: I
         <button
           type="button"
           aria-label="like"
-          onClick={() => setLiked((v) => !v)}
+          onClick={(e) => {
+            e.stopPropagation();
+            setLiked((v) => !v);
+          }}
           className="absolute right-[16px] top-[16px] h-[36px] w-[36px] rounded-full bg-white/80 backdrop-blur-[4px] flex items-center justify-center"
         >
           <img
@@ -100,7 +120,10 @@ export default function TourCard({ data, icons }: { data: TourCardData; icons: I
 
           <button
             type="button"
-            onClick={data.onClickDetail}
+            onClick={(e) => {
+              e.stopPropagation();
+              data.onClickDetail?.();
+            }}
             className="h-[36px] w-[95px] rounded-[8px] px-[16px] py-[8px] bg-[#0066FF]/10 flex items-center justify-center"
           >
             <span className="text-[14px] font-[700] leading-[20px] text-[#0166FF] whitespace-nowrap">
