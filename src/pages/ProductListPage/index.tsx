@@ -28,8 +28,6 @@ export default function ProductListPage() {
 
   const [items, setItems] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // ✅ 프론트 페이지네이션(백엔드 페이징 없을 때)
   const [currentPage, setCurrentPage] = useState(1);
   const PAGE_SIZE = 6;
 

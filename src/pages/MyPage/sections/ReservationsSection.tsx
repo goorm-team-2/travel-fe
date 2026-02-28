@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { inquiryApi } from '../../../api/inquiryApi';
+import { resolveBackendImageUrl } from '../../../utils/asset';
 
 type FilterKey = 'all' | 'ongoing' | 'done';
 type ReservationStatus = 'INQUIRY' | 'WAITING' | 'DONE';
@@ -66,6 +67,14 @@ function addDays(iso: string, days: number) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
+function normalizeReservationImage(url: string) {
+  if (!url) return url;
+  if (url.startsWith('/images/mypage/')) return url;
+  if (url.startsWith('/images/')) return resolveBackendImageUrl(url);
+
+  return url;
+}
+
 function adaptMyInquiry(raw: MyInquiryRaw, idx: number): ReservationItem {
   const nights = parseNights(raw.duration);
   const endDate = addDays(raw.departureDate, nights);
@@ -83,7 +92,7 @@ function adaptMyInquiry(raw: MyInquiryRaw, idx: number): ReservationItem {
     adultCount: 2,
     childCount: 0,
     priceText: formatPriceKRW(Number(raw.price ?? 0)),
-    imageSrc: raw.thumbnailUrl ?? '',
+    imageSrc: normalizeReservationImage(raw.thumbnailUrl ?? ''),
     status,
   };
 }
@@ -139,7 +148,14 @@ function ReservationCard({
           className="h-[150px] w-[220px] shrink-0 overflow-hidden rounded-[12px] bg-[#EEF2F7]"
           aria-label="go-detail"
         >
-          <img src={item.imageSrc} alt={item.productName} className="h-full w-full object-cover" />
+          <img
+            src={item.imageSrc}
+            alt={item.productName}
+            className="h-full w-full object-cover"
+            onError={(e) => {
+              e.currentTarget.src = '/images/placeholder.jpg';
+            }}
+          />
         </button>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -369,7 +385,7 @@ export default function ReservationsSection() {
           <div className="flex flex-col items-center justify-center rounded-[16px] border border-[#E5EAF1] bg-white py-[64px]">
             <div className="mb-[24px]">
               <img
-                src="public/images/empty-reservation.png"
+                src="/images/empty-reservation.png"
                 alt="예약 내역 없음"
                 className="h-[120px] w-auto opacity-80"
               />

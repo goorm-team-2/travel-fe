@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import DestinationCard from './DestinationCard';
 import { productApi } from '../../../api/productApi';
 import type { FeaturedProduct } from '../../../types/product';
+import { resolveBackendImageUrl } from '../../../utils/asset';
 
 function ArrowIcon() {
   return (
@@ -45,6 +46,10 @@ const FALLBACK_FEATURED: FeaturedProduct[] = [
 
 function normalizeImagePath(url: string) {
   if (!url) return url;
+
+  if (url.startsWith('/images/featured/')) return url;
+  if (url.startsWith('/images/')) return resolveBackendImageUrl(url);
+
   return url;
 }
 

@@ -4,6 +4,8 @@ import type { FeaturedProduct } from '../../../types/product';
 export default function DestinationCard({ item }: { item: FeaturedProduct }) {
   const navigate = useNavigate();
 
+  console.log('featured imageUrl:', item.imageUrl);
+
   return (
     <article
       role="button"
