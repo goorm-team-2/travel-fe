@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { productApi } from '../../api/productApi';
 import IncludesExcludes from './IncludesExcludes';
@@ -9,11 +9,13 @@ import StickyContentTabs from './StickyContentTabs';
 import PointsSection from './PointsSection';
 import DetailSection from './DetailSection';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../context/AuthContext';
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState<any>(null);
+  const { isLoggedIn } = useContext(AuthContext);
   const tabs = [
     { id: 'points', label: '상품개요' },
     { id: 'detail', label: '상세일정' },
@@ -63,14 +65,21 @@ export default function ProductDetailPage() {
           <IncludesExcludes includes={product.includes} excludes={product.excludes} />
         </div>
         <button
-          onClick={() => {
-            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-            navigate(`/inquiry/${product.id}`);
-          }}
-          className="sticky top-20 bg-primary w-full h-20 text-white font-medium text-[16px] rounded-[12px]"
+        onClick={() => {
+          // 로그인 체크 로직 추가
+          if (!isLoggedIn) {
+            alert('로그인이 필요한 서비스입니다.');
+            navigate('/auth?tab=login');
+            return;
+          }
+          // 로그인 된 경우에만 스크롤 상단 이동 및 경로 이동 실행
+          window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+          navigate(`/inquiry/${product.id}`);
+        }}
+        className="sticky top-20 bg-primary w-full h-20 text-white font-medium text-[16px] rounded-[12px]"
         >
           문의 및 예약하기
-        </button>
+        </button>   
       </div>
     </div>
   );
